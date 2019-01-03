@@ -69,6 +69,8 @@ def show_deprecated(deprecated, recommended):
 @utils.arg('-t', '--timeout', metavar='<TIMEOUT>',
            type=int,
            help=_('Stack creation timeout in minutes.'))
+@utils.arg('-i', '--initialize', default=False, action="store_true",
+           help=_('Only initialize stack and do not allocate resrouces.'))
 @utils.arg('-r', '--enable-rollback', default=False, action="store_true",
            help=_('Enable rollback on create/update failure.'))
 @utils.arg('-P', '--parameters', metavar='<KEY1=VALUE1;KEY2=VALUE2...>',
@@ -115,6 +117,7 @@ def do_stack_create(hc, args):
     fields = {
         'stack_name': args.name,
         'disable_rollback': not(args.enable_rollback),
+        'initialize': args.initialize,
         'parameters': utils.format_all_parameters(args.parameters,
                                                   args.parameter_file,
                                                   args.template_file,
