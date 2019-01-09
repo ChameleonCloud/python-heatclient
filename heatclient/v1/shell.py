@@ -70,7 +70,7 @@ def show_deprecated(deprecated, recommended):
            type=int,
            help=_('Stack creation timeout in minutes.'))
 @utils.arg('-i', '--initialize', default=False, action="store_true",
-           help=_('Only initialize stack and do not allocate resrouces.'))
+           help=_('Only initialize stack and do not allocate resources.'))
 @utils.arg('-r', '--enable-rollback', default=False, action="store_true",
            help=_('Enable rollback on create/update failure.'))
 @utils.arg('-P', '--parameters', metavar='<KEY1=VALUE1;KEY2=VALUE2...>',

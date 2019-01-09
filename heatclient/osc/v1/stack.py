@@ -68,7 +68,7 @@ class CreateStack(command.ShowOne):
         parser.add_argument(
             '-i', '--initialize',
             action='store_true',
-            help=_('Only initialize stack and do not allocate resrouces.')
+            help=_('Only initialize stack and do not allocate resources.')
         )
         parser.add_argument(
             '--enable-rollback',
