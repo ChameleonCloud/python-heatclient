@@ -22,6 +22,7 @@ from osc_lib import utils
 from oslo_serialization import jsonutils
 import six
 from six.moves.urllib import request
+import yaml
 
 from heatclient._i18n import _
 from heatclient.common import event_utils
@@ -63,6 +64,11 @@ class CreateStack(command.ShowOne):
                    'wildcards to match multiple stacks or resources: '
                    '``nested_stack/an*/*_resource``. This can be specified '
                    'multiple times')
+        )
+        parser.add_argument(
+            '-i', '--initialize',
+            action='store_true',
+            help=_('Only initialize stack and do not allocate resrouces.')
         )
         parser.add_argument(
             '--enable-rollback',
@@ -141,6 +147,7 @@ class CreateStack(command.ShowOne):
         fields = {
             'stack_name': parsed_args.name,
             'disable_rollback': not parsed_args.enable_rollback,
+            'initialize': parsed_args.initialize,
             'parameters': parameters,
             'template': template,
             'files': dict(list(tpl_files.items()) + list(env_files.items())),
@@ -822,13 +829,15 @@ class AdoptStack(command.ShowOne):
         adopt_url = heat_utils.normalise_file_path_to_url(
             parsed_args.adopt_file)
         adopt_data = request.urlopen(adopt_url).read().decode('utf-8')
-
+        yaml_adopt_data = yaml.safe_load(adopt_data) or {}
+        files = yaml_adopt_data.get('files', {})
+        files.update(env_files)
         fields = {
             'stack_name': parsed_args.name,
             'disable_rollback': not parsed_args.enable_rollback,
             'adopt_stack_data': adopt_data,
             'parameters': heat_utils.format_parameters(parsed_args.parameter),
-            'files': dict(list(env_files.items())),
+            'files': files,
             'environment': env,
             'timeout': parsed_args.timeout
         }
